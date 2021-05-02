@@ -1,4 +1,5 @@
-import { EMPTY_STRING, LINE_BREAK } from './consts'
+import { EMPTY_STRING, LINE_BREAK } from './utils/consts'
+import { Print } from './utils/printer'
 
 export enum DataType {
   SCALAR,
@@ -43,11 +44,11 @@ export class Searchable {
   }
 
   public PrintFields() {
-    console.log(`Search ${this.name} with`)
+    Print(`Search ${this.name} with`)
     Object.keys(this.fields).forEach((field) => {
-      console.log(field)
+      Print(field)
     })
-    console.log(LINE_BREAK)
+    Print(LINE_BREAK)
   }
 
   public GetField(field: string): Field | null {

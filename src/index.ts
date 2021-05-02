@@ -1,7 +1,8 @@
 import { Main } from './main'
+import { Print } from './utils/printer'
 
 export const main = () => {
-  console.log('hello world')
+  Print('hello world')
   return 1
 }
 

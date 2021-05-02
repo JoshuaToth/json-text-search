@@ -21,24 +21,24 @@ describe('Loading Performance', () => {
     const searchable = new Searchable(GenerateRecords(300), 'LOTR books')
     jest.spyOn(global.console, 'log')
     searchable.PrintFields()
-    expect(console.log).toHaveBeenCalledWith('Search LOTR books with')
-    expect(console.log).toHaveBeenCalledWith('name')
+    expect(Print).toHaveBeenCalledWith('Search LOTR books with')
+    expect(Print).toHaveBeenCalledWith('name')
   })
 
   it('should be able to initialize with several thousand records', () => {
     const searchable = new Searchable(GenerateRecords(5000), 'LOTR books')
     jest.spyOn(global.console, 'log')
     searchable.PrintFields()
-    expect(console.log).toHaveBeenCalledWith('Search LOTR books with')
-    expect(console.log).toHaveBeenCalledWith('name')
+    expect(Print).toHaveBeenCalledWith('Search LOTR books with')
+    expect(Print).toHaveBeenCalledWith('name')
   })
 
   it('should be able to initialize with several tens of thousands of records', () => {
     const searchable = new Searchable(GenerateRecords(40000), 'LOTR books')
     jest.spyOn(global.console, 'log')
     searchable.PrintFields()
-    expect(console.log).toHaveBeenCalledWith('Search LOTR books with')
-    expect(console.log).toHaveBeenCalledWith('name')
+    expect(Print).toHaveBeenCalledWith('Search LOTR books with')
+    expect(Print).toHaveBeenCalledWith('name')
   })
 })
 

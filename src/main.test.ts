@@ -3,9 +3,7 @@ import {
   COULD_NOT_PARSE_FILE,
   FILE_DOES_NOT_EXIST,
   NOT_ARRAY_RECORDS,
-} from './consts'
-
-jest.mock('fs')
+} from './utils/consts'
 
 import { Main } from './main'
 import {
@@ -13,6 +11,10 @@ import {
   MockLotRBooks,
   MockMatrixMovies,
 } from './_test_utils_/mockRecords'
+import Printer, { Print } from './utils/printer'
+
+jest.mock('fs')
+jest.mock('./utils/printer')
 
 const mockReadFiles = () =>
   (fs.readFileSync = jest
@@ -27,6 +29,8 @@ describe('Main', () => {
     //@ts-ignore
     global.process.exit = jest.fn().mockImplementation((code?: number) => {})
     fs.existsSync = jest.fn().mockReturnValue(true)
+
+    Printer.Print = jest.fn()
 
     jest.spyOn(global.console, 'log')
   })
@@ -46,11 +50,11 @@ describe('Main', () => {
 
     expect(global.process.exit).not.toHaveBeenCalled()
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[0].name)
     )
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[1].name)
     )
   })
@@ -61,29 +65,23 @@ describe('Main', () => {
     const main = new Main(MockFileLocations)
     main.PrintSearchableFields()
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[0].name)
     )
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[1].name)
     )
 
-    expect(console.log).toHaveBeenCalledWith(Object.keys(MockLotRBooks[0])[0])
-    expect(console.log).toHaveBeenCalledWith(Object.keys(MockLotRBooks[0])[1])
-    expect(console.log).toHaveBeenCalledWith(Object.keys(MockLotRBooks[0])[2])
+    expect(Print).toHaveBeenCalledWith(Object.keys(MockLotRBooks[0])[0])
+    expect(Print).toHaveBeenCalledWith(Object.keys(MockLotRBooks[0])[1])
+    expect(Print).toHaveBeenCalledWith(Object.keys(MockLotRBooks[0])[2])
 
-    expect(console.log).toHaveBeenCalledWith(
-      Object.keys(MockMatrixMovies[0])[0]
-    )
-    expect(console.log).toHaveBeenCalledWith(
-      Object.keys(MockMatrixMovies[0])[1]
-    )
-    expect(console.log).toHaveBeenCalledWith(
-      Object.keys(MockMatrixMovies[0])[2]
-    )
+    expect(Print).toHaveBeenCalledWith(Object.keys(MockMatrixMovies[0])[0])
+    expect(Print).toHaveBeenCalledWith(Object.keys(MockMatrixMovies[0])[1])
+    expect(Print).toHaveBeenCalledWith(Object.keys(MockMatrixMovies[0])[2])
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[1].name)
     )
   })
@@ -92,7 +90,7 @@ describe('Main', () => {
     fs.existsSync = jest.fn().mockReturnValue(false)
     new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(FILE_DOES_NOT_EXIST)
     )
   })
@@ -106,7 +104,7 @@ describe('Main', () => {
 
     new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(NOT_ARRAY_RECORDS)
     )
   })
@@ -118,7 +116,7 @@ describe('Main', () => {
 
     new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
 
-    expect(console.log).toHaveBeenCalledWith(
+    expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(COULD_NOT_PARSE_FILE)
     )
   })

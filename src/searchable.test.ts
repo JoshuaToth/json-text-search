@@ -1,5 +1,6 @@
 import { DataType, Searchable } from './searchable'
-import { LINE_BREAK } from './consts'
+import { LINE_BREAK } from './utils/consts'
+import Printer, { Print } from './utils/printer'
 
 const DefaultObject = [
   {
@@ -24,25 +25,28 @@ const DefaultObject = [
   },
 ]
 
+jest.mock('./utils/printer')
+
 describe('Searchable', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    Printer.Print = jest.fn()
   })
 
   it('initializes with a basic object', () => {
     const searchable = new Searchable(DefaultObject, 'LOTR books')
     jest.spyOn(global.console, 'log')
     searchable.PrintFields()
-    expect(console.log).toHaveBeenCalledWith('Search LOTR books with')
-    expect(console.log).toHaveBeenCalledWith('name')
+    expect(Print).toHaveBeenCalledWith('Search LOTR books with')
+    expect(Print).toHaveBeenCalledWith('name')
   })
 
   it('initializes with an empty object', () => {
     const searchable = new Searchable([], 'GOT final book characters')
     jest.spyOn(global.console, 'log')
     searchable.PrintFields()
-    expect(console.log).not.toHaveBeenCalledWith('name')
-    expect(console.log).toHaveBeenCalledWith(LINE_BREAK)
+    expect(Print).not.toHaveBeenCalledWith('name')
+    expect(Print).toHaveBeenCalledWith(LINE_BREAK)
   })
 
   it('can retrieve the correct type of field that exists', () => {
