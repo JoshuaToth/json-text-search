@@ -1,5 +1,6 @@
 import { Searchable } from '../src/searchable'
 import Chance from 'chance'
+import Printer, { Print } from '../src/utils/printer'
 
 const GenerateRecords = (amount = 200): Record<string, any>[] => {
   const chance = new Chance()
@@ -16,10 +17,16 @@ const GenerateRecords = (amount = 200): Record<string, any>[] => {
   return records
 }
 
+jest.mock('../src/utils/printer')
+
 describe('Loading Performance', () => {
+  beforeEach(() => {
+    Printer.Print = jest.fn()
+  })
+
   it('should be able to initialize with several hundred records', () => {
     const searchable = new Searchable(GenerateRecords(300), 'LOTR books')
-    jest.spyOn(global.console, 'log')
+
     searchable.PrintFields()
     expect(Print).toHaveBeenCalledWith('Search LOTR books with')
     expect(Print).toHaveBeenCalledWith('name')
@@ -27,7 +34,7 @@ describe('Loading Performance', () => {
 
   it('should be able to initialize with several thousand records', () => {
     const searchable = new Searchable(GenerateRecords(5000), 'LOTR books')
-    jest.spyOn(global.console, 'log')
+
     searchable.PrintFields()
     expect(Print).toHaveBeenCalledWith('Search LOTR books with')
     expect(Print).toHaveBeenCalledWith('name')
@@ -35,7 +42,7 @@ describe('Loading Performance', () => {
 
   it('should be able to initialize with several tens of thousands of records', () => {
     const searchable = new Searchable(GenerateRecords(40000), 'LOTR books')
-    jest.spyOn(global.console, 'log')
+
     searchable.PrintFields()
     expect(Print).toHaveBeenCalledWith('Search LOTR books with')
     expect(Print).toHaveBeenCalledWith('name')

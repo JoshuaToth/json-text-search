@@ -12,7 +12,7 @@ import {
 import { Print } from './utils/printer'
 import ReadLine from 'readline'
 
-export class Main {
+export class FileSearcher {
   private searchables: Searchable[] = []
 
   constructor(files: { fileName: string; name: string }[]) {

@@ -1,4 +1,4 @@
-import { Main } from './main'
+import { FileSearcher } from './file-searcher'
 import { Print } from './utils/printer'
 
 export const main = () => {
@@ -9,10 +9,13 @@ export const main = () => {
 export const run = async () => {
   const recordList = require('../content/files.json')
 
-  const mainSearch = new Main(recordList)
-  const searchable = await mainSearch.FileQuestion()
-  const field = await mainSearch.FieldQuestion(searchable)
-  const searchResults = await mainSearch.SearchQuestion(searchable, field)
+  const fileSearcherSearch = new FileSearcher(recordList)
+  const searchable = await fileSearcherSearch.FileQuestion()
+  const field = await fileSearcherSearch.FieldQuestion(searchable)
+  const searchResults = await fileSearcherSearch.SearchQuestion(
+    searchable,
+    field
+  )
   console.log(searchResults)
 }
 

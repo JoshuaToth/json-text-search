@@ -35,7 +35,7 @@ describe('Searchable', () => {
 
   it('initializes with a basic object', () => {
     const searchable = new Searchable(DefaultObject, 'LOTR books')
-    jest.spyOn(global.console, 'log')
+
     searchable.PrintFields()
     expect(Print).toHaveBeenCalledWith('Search LOTR books with')
     expect(Print).toHaveBeenCalledWith('name')
@@ -43,7 +43,7 @@ describe('Searchable', () => {
 
   it('initializes with an empty object', () => {
     const searchable = new Searchable([], 'GOT final book characters')
-    jest.spyOn(global.console, 'log')
+
     searchable.PrintFields()
     expect(Print).not.toHaveBeenCalledWith('name')
     expect(Print).toHaveBeenCalledWith(LINE_BREAK)

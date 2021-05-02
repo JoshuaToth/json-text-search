@@ -7,7 +7,7 @@ import {
   NOT_ARRAY_RECORDS,
 } from './utils/consts'
 
-import { Main } from './main'
+import { FileSearcher } from './file-searcher'
 import {
   MockFileLocations,
   MockLotRBooks,
@@ -26,7 +26,7 @@ const mockReadFiles = () =>
     .mockReturnValueOnce(Buffer.from(JSON.stringify(MockLotRBooks)))
     .mockReturnValueOnce(Buffer.from(JSON.stringify(MockMatrixMovies))))
 
-describe('Main', () => {
+describe('File Searcher', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -35,22 +35,20 @@ describe('Main', () => {
     fs.existsSync = jest.fn().mockReturnValue(true)
 
     Printer.Print = jest.fn()
-
-    jest.spyOn(global.console, 'log')
   })
 
   it('can initialize with no files', () => {
-    const main = new Main([])
-    expect(main).toBeDefined()
+    const fileSearcher = new FileSearcher([])
+    expect(fileSearcher).toBeDefined()
     expect(global.process.exit).toHaveBeenCalledTimes(1)
   })
 
   it('can initialize with mock files', () => {
     mockReadFiles()
 
-    const main = new Main(MockFileLocations)
-    expect(main).toBeDefined()
-    const message = main.GetSearchableFilesMessage()
+    const fileSearcher = new FileSearcher(MockFileLocations)
+    expect(fileSearcher).toBeDefined()
+    const message = fileSearcher.GetSearchableFilesMessage()
 
     expect(global.process.exit).not.toHaveBeenCalled()
 
@@ -62,8 +60,8 @@ describe('Main', () => {
   it('registers fields to be searched', () => {
     mockReadFiles()
 
-    const main = new Main(MockFileLocations)
-    main.PrintSearchableFields()
+    const fileSearcher = new FileSearcher(MockFileLocations)
+    fileSearcher.PrintSearchableFields()
 
     expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[0].name)
@@ -88,7 +86,7 @@ describe('Main', () => {
 
   it("prints out a bad file if it doesn't exist", () => {
     fs.existsSync = jest.fn().mockReturnValue(false)
-    new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
+    new FileSearcher([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
 
     expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(FILE_DOES_NOT_EXIST)
@@ -102,7 +100,7 @@ describe('Main', () => {
         Buffer.from(JSON.stringify({ bad: 'wont parse as array' }))
       )
 
-    new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
+    new FileSearcher([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
 
     expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(NOT_ARRAY_RECORDS)
@@ -114,7 +112,7 @@ describe('Main', () => {
       .fn()
       .mockReturnValueOnce(Buffer.from('lol this isnt even json'))
 
-    new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
+    new FileSearcher([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
 
     expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(COULD_NOT_PARSE_FILE)
@@ -129,9 +127,9 @@ describe('Main', () => {
       close: jest.fn(),
     })
 
-    const main = new Main(MockFileLocations)
+    const fileSearcher = new FileSearcher(MockFileLocations)
 
-    const searchable = await main.FileQuestion()
+    const searchable = await fileSearcher.FileQuestion()
 
     expect(searchable).toBeDefined()
   })
@@ -158,9 +156,9 @@ describe('Main', () => {
         close: jest.fn(),
       })
 
-    const main = new Main(MockFileLocations)
+    const fileSearcher = new FileSearcher(MockFileLocations)
 
-    const searchable = await main.FileQuestion()
+    const searchable = await fileSearcher.FileQuestion()
 
     expect(searchable).toBeDefined()
     expect(Print).toHaveBeenCalledWith(INVALID_OPTION)
@@ -181,10 +179,10 @@ describe('Main', () => {
         close: jest.fn(),
       })
 
-    const main = new Main(MockFileLocations)
+    const fileSearcher = new FileSearcher(MockFileLocations)
 
-    const searchable = await main.FileQuestion()
-    const field = await main.FieldQuestion(searchable)
+    const searchable = await fileSearcher.FileQuestion()
+    const field = await fileSearcher.FieldQuestion(searchable)
 
     expect(field).toBeDefined()
   })
@@ -209,10 +207,10 @@ describe('Main', () => {
         close: jest.fn(),
       })
 
-    const main = new Main(MockFileLocations)
+    const fileSearcher = new FileSearcher(MockFileLocations)
 
-    const searchable = await main.FileQuestion()
-    const field = await main.FieldQuestion(searchable)
+    const searchable = await fileSearcher.FileQuestion()
+    const field = await fileSearcher.FieldQuestion(searchable)
 
     expect(field).toBeDefined()
     expect(Print).toHaveBeenCalledWith(INVALID_FIELD)
@@ -238,11 +236,11 @@ describe('Main', () => {
         close: jest.fn(),
       })
 
-    const main = new Main(MockFileLocations)
+    const fileSearcher = new FileSearcher(MockFileLocations)
 
-    const searchable = await main.FileQuestion()
-    const field = await main.FieldQuestion(searchable)
-    const searchResults = await main.SearchQuestion(searchable, field)
+    const searchable = await fileSearcher.FileQuestion()
+    const field = await fileSearcher.FieldQuestion(searchable)
+    const searchResults = await fileSearcher.SearchQuestion(searchable, field)
 
     expect(searchResults).toHaveLength(1)
     expect(searchResults[0]).toEqual(MockMatrixMovies[0])
