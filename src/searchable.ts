@@ -62,7 +62,6 @@ export class Searchable {
         ? value
         : CreateArrayValue(field.fieldName, value)
     searchValueKey = replaceEmptyValue(searchValueKey)
-
     const indexes = this.data[field.fieldName][searchValueKey] ?? []
     return indexes.map((index) => this.records[index])
   }

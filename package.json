@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rm -rf dist && mkdir dist && tsc src/index.ts --outdir dist && cp ./package.json dist",
     "test": "jest src/ --coverage",
-    "test-watch": "yarn test --watchAll"
+    "test-watch": "yarn test --watchAll",
+    "performance": "jest performance/"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,9 @@
   },
   "homepage": "https://github.com/JoshuaToth/json-text-search#readme",
   "devDependencies": {
+    "@types/chance": "^1.1.1",
     "@types/jest": "^26.0.23",
+    "chance": "^1.1.7",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "jest": "^26.6.3",
