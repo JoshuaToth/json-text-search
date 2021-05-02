@@ -2,6 +2,8 @@ import fs from 'fs'
 import {
   COULD_NOT_PARSE_FILE,
   FILE_DOES_NOT_EXIST,
+  INVALID_FIELD,
+  INVALID_OPTION,
   NOT_ARRAY_RECORDS,
 } from './utils/consts'
 
@@ -12,7 +14,9 @@ import {
   MockMatrixMovies,
 } from './_test_utils_/mockRecords'
 import Printer, { Print } from './utils/printer'
+import ReadLine from 'readline'
 
+jest.mock('readline')
 jest.mock('fs')
 jest.mock('./utils/printer')
 
@@ -46,17 +50,13 @@ describe('Main', () => {
 
     const main = new Main(MockFileLocations)
     expect(main).toBeDefined()
-    main.PrintSearchableFiles()
+    const message = main.GetSearchableFilesMessage()
 
     expect(global.process.exit).not.toHaveBeenCalled()
 
-    expect(Print).toHaveBeenCalledWith(
-      expect.stringContaining(MockFileLocations[0].name)
-    )
+    expect(message).toContain(MockFileLocations[0].name)
 
-    expect(Print).toHaveBeenCalledWith(
-      expect.stringContaining(MockFileLocations[1].name)
-    )
+    expect(message).toContain(MockFileLocations[1].name)
   })
 
   it('registers fields to be searched', () => {
@@ -119,5 +119,119 @@ describe('Main', () => {
     expect(Print).toHaveBeenCalledWith(
       expect.stringContaining(COULD_NOT_PARSE_FILE)
     )
+  })
+
+  it('returns the expected file searchable when a file index is used', async () => {
+    mockReadFiles()
+
+    ReadLine.createInterface = jest.fn().mockReturnValue({
+      question: (_: any, callback: (arg: string) => void) => callback('1'),
+    })
+
+    const main = new Main(MockFileLocations)
+
+    const searchable = await main.FileQuestion()
+
+    expect(searchable).toBeDefined()
+  })
+
+  it('asks for the correct option if a bad file index is passed in', async () => {
+    mockReadFiles()
+
+    ReadLine.createInterface = jest
+      .fn()
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback('-1'),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback('f'),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback(''),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback('1'),
+      })
+
+    const main = new Main(MockFileLocations)
+
+    const searchable = await main.FileQuestion()
+
+    expect(searchable).toBeDefined()
+    expect(Print).toHaveBeenCalledWith(INVALID_OPTION)
+  })
+
+  it('returns the expected field when a correct fieldName is used', async () => {
+    mockReadFiles()
+
+    ReadLine.createInterface = jest
+      .fn()
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback('2'),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) =>
+          callback(Object.keys(MockMatrixMovies[0])[1]),
+      })
+
+    const main = new Main(MockFileLocations)
+
+    const searchable = await main.FileQuestion()
+    const field = await main.FieldQuestion(searchable)
+
+    expect(field).toBeDefined()
+  })
+
+  it('will prompt the user to enter a valid field if an invalid field is entered', async () => {
+    mockReadFiles()
+
+    ReadLine.createInterface = jest
+      .fn()
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback('2'),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) =>
+          callback('boogie nights'),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) =>
+          callback(Object.keys(MockMatrixMovies[0])[1]),
+      })
+
+    const main = new Main(MockFileLocations)
+
+    const searchable = await main.FileQuestion()
+    const field = await main.FieldQuestion(searchable)
+
+    expect(field).toBeDefined()
+    expect(Print).toHaveBeenCalledWith(INVALID_FIELD)
+  })
+
+  it('returns matching records when a valid search term is used', async () => {
+    mockReadFiles()
+
+    ReadLine.createInterface = jest
+      .fn()
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) => callback('2'),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) =>
+          callback(Object.keys(MockMatrixMovies[0])[1]),
+      })
+      .mockReturnValueOnce({
+        question: (_: any, callback: (arg: string) => void) =>
+          callback(MockMatrixMovies[0].title),
+      })
+
+    const main = new Main(MockFileLocations)
+
+    const searchable = await main.FileQuestion()
+    const field = await main.FieldQuestion(searchable)
+    const searchResults = await main.SearchQuestion(searchable, field)
+
+    expect(searchResults).toHaveLength(1)
+    expect(searchResults[0]).toEqual(MockMatrixMovies[0])
   })
 })

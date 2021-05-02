@@ -9,4 +9,4 @@ export const main = () => {
 const recordList = require('../content/files.json')
 
 const mainSearch = new Main(recordList)
-mainSearch.PrintSearchableFiles()
+mainSearch.GetSearchableFilesMessage()

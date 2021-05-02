@@ -1,13 +1,16 @@
 import { readFileSync, existsSync } from 'fs'
-import { Searchable } from './searchable'
+import { Entry, Field, Searchable } from './searchable'
 import {
   ATTEMPTING_TO_LOAD,
   COULD_NOT_PARSE_FILE,
   FILE_DOES_NOT_EXIST,
+  INVALID_FIELD,
+  INVALID_OPTION,
   NOT_ARRAY_RECORDS,
   NO_FILES_LOADED,
 } from './utils/consts'
 import { Print } from './utils/printer'
+import ReadLine from 'readline'
 
 export class Main {
   private searchables: Searchable[] = []
@@ -46,16 +49,79 @@ export class Main {
     Print(`Search files loaded`)
   }
 
-  public PrintSearchableFiles() {
-    const msg = this.searchables.reduce((message, searchable, index) => {
+  public GetSearchableFilesMessage(): string {
+    return this.searchables.reduce((message, searchable, index) => {
       return ` ${message} ${index + 1}) ${searchable.name}`
     }, 'Select')
-    Print(msg)
   }
 
   public PrintSearchableFields() {
     this.searchables.forEach((searchable) => {
       searchable.PrintFields()
     })
+  }
+
+  public async FileQuestion(): Promise<Searchable> {
+    let selectedOption: number = -1
+    while (selectedOption < 0) {
+      const rl = ReadLine.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      })
+
+      selectedOption = await new Promise((res) =>
+        rl.question(this.GetSearchableFilesMessage(), (answer) => {
+          const option = parseInt(answer) - 1
+          if (
+            Number.isNaN(option) ||
+            option < 0 ||
+            option >= this.searchables.length
+          ) {
+            Print(INVALID_OPTION)
+            res(-1)
+          } else {
+            res(option)
+          }
+        })
+      )
+    }
+    return this.searchables[selectedOption]
+  }
+
+  public async FieldQuestion(file: Searchable): Promise<Field> {
+    let selectedField = null
+    while (selectedField === null) {
+      const rl = ReadLine.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      })
+
+      selectedField = await new Promise<Field | null>((res) =>
+        rl.question('Enter search term', (answer) => {
+          res(file.GetField(answer))
+        })
+      )
+      if (selectedField === null) {
+        Print(INVALID_FIELD)
+      } else {
+        return selectedField
+      }
+    }
+  }
+
+  public async SearchQuestion(
+    file: Searchable,
+    field: Field
+  ): Promise<Entry[]> {
+    const rl = ReadLine.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    })
+
+    return await new Promise<Entry[]>((res) =>
+      rl.question('Enter search value', (answer) => {
+        res(file.SearchForValue(field, answer))
+      })
+    )
   }
 }

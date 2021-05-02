@@ -6,3 +6,5 @@ export const NOT_ARRAY_RECORDS = 'File is not an array of records:'
 export const ATTEMPTING_TO_LOAD = 'Attempting to load file:'
 export const NO_FILES_LOADED =
   'No files loaded, please check your config and try again'
+export const INVALID_OPTION = 'Please enter a valid option number'
+export const INVALID_FIELD = 'Please enter a valid field'
