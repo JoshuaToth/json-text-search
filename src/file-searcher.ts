@@ -51,7 +51,7 @@ export class FileSearcher {
 
   public GetSearchableFilesMessage(): string {
     return this.searchables.reduce((message, searchable, index) => {
-      return ` ${message} ${index + 1}) ${searchable.name}`
+      return `${message} ${index + 1}) ${searchable.name}`
     }, 'Select')
   }
 
@@ -69,15 +69,19 @@ export class FileSearcher {
         output: process.stdout,
       })
       selectedOption = await new Promise((res) =>
-        rl.question(this.GetSearchableFilesMessage() + ' \n', (answer) => {
-          const option = parseInt(answer) - 1
-          if (Number.isNaN(option) || option >= this.searchables.length) {
-            Print(INVALID_OPTION)
-            res(-1)
-          } else {
-            res(option)
+        rl.question(
+          `${this.GetSearchableFilesMessage()}
+`,
+          (answer) => {
+            const option = parseInt(answer) - 1
+            if (Number.isNaN(option) || option >= this.searchables.length) {
+              Print(INVALID_OPTION)
+              res(-1)
+            } else {
+              res(option)
+            }
           }
-        })
+        )
       )
 
       rl.close()
@@ -93,9 +97,13 @@ export class FileSearcher {
         output: process.stdout,
       })
       selectedField = await new Promise<Field | null>((res) =>
-        rl.question('Enter search term \n', (answer) => {
-          res(file.GetField(answer))
-        })
+        rl.question(
+          `Enter search term
+`,
+          (answer) => {
+            res(file.GetField(answer))
+          }
+        )
       )
       if (selectedField === null) {
         Print(INVALID_FIELD)
@@ -115,10 +123,14 @@ export class FileSearcher {
     })
 
     return await new Promise<Entry[]>((res) =>
-      rl.question('Enter search value \n', (answer) => {
-        res(file.SearchForValue(field, answer))
-        rl.close()
-      })
+      rl.question(
+        `Enter search value
+`,
+        (answer) => {
+          res(file.SearchForValue(field, answer))
+          rl.close()
+        }
+      )
     )
   }
 }
