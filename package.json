@@ -4,8 +4,9 @@
   "description": "Using the provided data (tickets.json and users.json and organization.json) write a simple command line application to search the data and return the results in a human readable format.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "start": "ts-node src/index.ts"
+    "build": "rm -rf dist && mkdir dist && tsc src/index.ts --outdir dist && cp ./package.json dist",
+    "test": "jest src/ --coverage",
+    "test-watch": "yarn test --watchAll"
   },
   "repository": {
     "type": "git",
