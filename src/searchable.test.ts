@@ -62,9 +62,23 @@ describe('Searchable', () => {
   it('will return the records for a valid field and value', () => {
     const searchable = new Searchable(DefaultObject, 'LOTR books')
     const field = searchable.GetField('pages')
-    const records = searchable.SearchForValue(field, '1253')
+    const records = searchable.SearchForValue(
+      field,
+      DefaultObject[0].pages.toString()
+    )
     expect(records).toHaveLength(2)
     expect(records[0]).toStrictEqual(DefaultObject[0])
     expect(records[1]).toStrictEqual(DefaultObject[2])
+  })
+
+  it('can search for a tag value within a field', () => {
+    const searchable = new Searchable(DefaultObject, 'LOTR books')
+    const field = searchable.GetField('authors')
+    const records = searchable.SearchForValue(
+      field,
+      DefaultObject[1].authors[1]
+    )
+    expect(records).toHaveLength(1)
+    expect(records[0]).toStrictEqual(DefaultObject[1])
   })
 })

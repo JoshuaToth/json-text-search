@@ -34,7 +34,7 @@ export class Searchable {
           AddValueIfMissing(key, index, this.data, record[key])
         } else {
           ;(record[key] as any[]).forEach((arrayVal) => {
-            const arrayValue = `${key}-${arrayVal}`
+            const arrayValue = CreateArrayValue(key, arrayVal)
             AddValueIfMissing(key, index, this.data, arrayValue)
           })
         }
@@ -57,7 +57,12 @@ export class Searchable {
   }
 
   public SearchForValue(field: Field, value: string): Entry[] {
-    const indexes = this.data[field.fieldName][value]
+    const searchValueKey =
+      field.type === DataType.SCALAR
+        ? value
+        : CreateArrayValue(field.fieldName, value)
+
+    const indexes = this.data[field.fieldName][searchValueKey] ?? []
     return indexes.map((index) => this.records[index])
   }
 }
@@ -74,3 +79,5 @@ const AddValueIfMissing = (
     data[key][value].push(index)
   }
 }
+
+const CreateArrayValue = (key: string, value: any) => `${key}-${value}`
