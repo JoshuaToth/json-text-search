@@ -1,12 +1,12 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "target": "esNext",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist",
-        "noImplicitAny": true
-    },
-    "lib": ["es2015"]
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "esNext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "noImplicitAny": true
+  },
+  "lib": ["es2015"]
 }

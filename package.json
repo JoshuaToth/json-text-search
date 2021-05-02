@@ -7,7 +7,8 @@
     "build": "rm -rf dist && mkdir dist && tsc src/index.ts --outdir dist && cp ./package.json dist",
     "test": "jest src/ --coverage",
     "test-watch": "yarn test --watchAll",
-    "performance": "jest performance/"
+    "performance": "jest performance/",
+    "start": "ts-node src/index.ts"
   },
   "repository": {
     "type": "git",

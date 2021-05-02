@@ -15,6 +15,3 @@ chance
 - Typescript
 - NodeJS
 - Jest
-
-// TODO
-Add test for n - x being added to a search object and then searched

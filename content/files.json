@@ -1,0 +1,14 @@
+[
+  {
+    "fileName": "organizations.json",
+    "name": "Organizations"
+  },
+  {
+    "fileName": "tickets.json",
+    "name": "Tickets"
+  },
+  {
+    "fileName": "users.json",
+    "name": "Users"
+  }
+]
