@@ -1,4 +1,9 @@
 import fs from 'fs'
+import {
+  COULD_NOT_PARSE_FILE,
+  FILE_DOES_NOT_EXIST,
+  NOT_ARRAY_RECORDS,
+} from './consts'
 
 jest.mock('fs')
 
@@ -22,6 +27,8 @@ describe('Main', () => {
     //@ts-ignore
     global.process.exit = jest.fn().mockImplementation((code?: number) => {})
     fs.existsSync = jest.fn().mockReturnValue(true)
+
+    jest.spyOn(global.console, 'log')
   })
 
   it('can initialize with no files', () => {
@@ -31,8 +38,6 @@ describe('Main', () => {
   })
 
   it('can initialize with mock files', () => {
-    jest.spyOn(global.console, 'log')
-
     mockReadFiles()
 
     const main = new Main(MockFileLocations)
@@ -51,12 +56,9 @@ describe('Main', () => {
   })
 
   it('registers fields to be searched', () => {
-    jest.spyOn(global.console, 'log')
-
     mockReadFiles()
 
     const main = new Main(MockFileLocations)
-    expect(main).toBeDefined()
     main.PrintSearchableFields()
 
     expect(console.log).toHaveBeenCalledWith(
@@ -83,6 +85,41 @@ describe('Main', () => {
 
     expect(console.log).toHaveBeenCalledWith(
       expect.stringContaining(MockFileLocations[1].name)
+    )
+  })
+
+  it("prints out a bad file if it doesn't exist", () => {
+    fs.existsSync = jest.fn().mockReturnValue(false)
+    new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringContaining(FILE_DOES_NOT_EXIST)
+    )
+  })
+
+  it('prints out a bad file if it is formatted incorrectly', () => {
+    fs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        Buffer.from(JSON.stringify({ bad: 'wont parse as array' }))
+      )
+
+    new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringContaining(NOT_ARRAY_RECORDS)
+    )
+  })
+
+  it('prints out a bad file if fails to jsonify it', () => {
+    fs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(Buffer.from('lol this isnt even json'))
+
+    new Main([{ fileName: 'starTrek.json', name: 'Star Trek Files' }])
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringContaining(COULD_NOT_PARSE_FILE)
     )
   })
 })

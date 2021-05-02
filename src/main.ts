@@ -32,8 +32,8 @@ export class Main {
         }
 
         this.searchables.push(new Searchable(records, file.name))
-      } catch (error) {
-        console.log(`${COULD_NOT_PARSE_FILE} ${fileName}`, error)
+      } catch {
+        console.log(`${COULD_NOT_PARSE_FILE} ${fileName}`)
         return
       }
     })
