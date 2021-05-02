@@ -126,6 +126,7 @@ describe('Main', () => {
 
     ReadLine.createInterface = jest.fn().mockReturnValue({
       question: (_: any, callback: (arg: string) => void) => callback('1'),
+      close: jest.fn(),
     })
 
     const main = new Main(MockFileLocations)
@@ -142,15 +143,19 @@ describe('Main', () => {
       .fn()
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback('-1'),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback('f'),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback(''),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback('1'),
+        close: jest.fn(),
       })
 
     const main = new Main(MockFileLocations)
@@ -168,10 +173,12 @@ describe('Main', () => {
       .fn()
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback('2'),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) =>
           callback(Object.keys(MockMatrixMovies[0])[1]),
+        close: jest.fn(),
       })
 
     const main = new Main(MockFileLocations)
@@ -189,14 +196,17 @@ describe('Main', () => {
       .fn()
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback('2'),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) =>
           callback('boogie nights'),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) =>
           callback(Object.keys(MockMatrixMovies[0])[1]),
+        close: jest.fn(),
       })
 
     const main = new Main(MockFileLocations)
@@ -215,14 +225,17 @@ describe('Main', () => {
       .fn()
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) => callback('2'),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) =>
           callback(Object.keys(MockMatrixMovies[0])[1]),
+        close: jest.fn(),
       })
       .mockReturnValueOnce({
         question: (_: any, callback: (arg: string) => void) =>
           callback(MockMatrixMovies[0].title),
+        close: jest.fn(),
       })
 
     const main = new Main(MockFileLocations)

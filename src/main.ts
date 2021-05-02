@@ -68,15 +68,10 @@ export class Main {
         input: process.stdin,
         output: process.stdout,
       })
-
       selectedOption = await new Promise((res) =>
-        rl.question(this.GetSearchableFilesMessage(), (answer) => {
+        rl.question(this.GetSearchableFilesMessage() + ' \n', (answer) => {
           const option = parseInt(answer) - 1
-          if (
-            Number.isNaN(option) ||
-            option < 0 ||
-            option >= this.searchables.length
-          ) {
+          if (Number.isNaN(option) || option >= this.searchables.length) {
             Print(INVALID_OPTION)
             res(-1)
           } else {
@@ -84,6 +79,8 @@ export class Main {
           }
         })
       )
+
+      rl.close()
     }
     return this.searchables[selectedOption]
   }
@@ -95,18 +92,17 @@ export class Main {
         input: process.stdin,
         output: process.stdout,
       })
-
       selectedField = await new Promise<Field | null>((res) =>
-        rl.question('Enter search term', (answer) => {
+        rl.question('Enter search term \n', (answer) => {
           res(file.GetField(answer))
         })
       )
       if (selectedField === null) {
         Print(INVALID_FIELD)
-      } else {
-        return selectedField
       }
+      rl.close()
     }
+    return selectedField
   }
 
   public async SearchQuestion(
@@ -119,8 +115,9 @@ export class Main {
     })
 
     return await new Promise<Entry[]>((res) =>
-      rl.question('Enter search value', (answer) => {
+      rl.question('Enter search value \n', (answer) => {
         res(file.SearchForValue(field, answer))
+        rl.close()
       })
     )
   }
