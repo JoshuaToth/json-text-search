@@ -1,4 +1,4 @@
-import { LINE_BREAK } from './consts'
+import { EMPTY_STRING, LINE_BREAK } from './consts'
 
 export enum DataType {
   SCALAR,
@@ -57,10 +57,11 @@ export class Searchable {
   }
 
   public SearchForValue(field: Field, value: string): Entry[] {
-    const searchValueKey =
+    let searchValueKey =
       field.type === DataType.SCALAR
         ? value
         : CreateArrayValue(field.fieldName, value)
+    searchValueKey = replaceEmptyValue(searchValueKey)
 
     const indexes = this.data[field.fieldName][searchValueKey] ?? []
     return indexes.map((index) => this.records[index])
@@ -73,11 +74,13 @@ const AddValueIfMissing = (
   data: Record<string, DataMap>,
   value: string
 ) => {
-  if (!data[key][value]) {
-    data[key][value] = [index]
+  const nonEmptyValue = replaceEmptyValue(value)
+  if (!data[key][nonEmptyValue]) {
+    data[key][nonEmptyValue] = [index]
   } else {
-    data[key][value].push(index)
+    data[key][nonEmptyValue].push(index)
   }
 }
 
 const CreateArrayValue = (key: string, value: any) => `${key}-${value}`
+const replaceEmptyValue = (value: any) => (value === '' ? EMPTY_STRING : value)

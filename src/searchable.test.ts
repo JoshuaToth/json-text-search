@@ -15,6 +15,11 @@ const DefaultObject = [
   {
     name: 'Return of the King',
     pages: 1253,
+    authors: ['J. R. R. Tolkien', ''],
+  },
+  {
+    name: '',
+    pages: -1,
     authors: ['J. R. R. Tolkien'],
   },
 ]
@@ -80,5 +85,36 @@ describe('Searchable', () => {
     )
     expect(records).toHaveLength(1)
     expect(records[0]).toStrictEqual(DefaultObject[1])
+  })
+
+  it('can search for an empty string value', () => {
+    const searchable = new Searchable(DefaultObject, 'LOTR books')
+    const field = searchable.GetField('name')
+    const records = searchable.SearchForValue(field, '')
+    expect(records).toHaveLength(1)
+    expect(records[0]).toStrictEqual(DefaultObject[3])
+  })
+
+  it("will return no results for a value that isn't found", () => {
+    const searchable = new Searchable(DefaultObject, 'LOTR books')
+    const field = searchable.GetField('name')
+    const records = searchable.SearchForValue(field, 'The Name of the Wind')
+    expect(records).toHaveLength(0)
+  })
+
+  it('can search for an empty string value within an array', () => {
+    const searchable = new Searchable(DefaultObject, 'LOTR books')
+    const field = searchable.GetField('authors')
+    const records = searchable.SearchForValue(field, '')
+    expect(records).toHaveLength(1)
+    expect(records[0]).toStrictEqual(DefaultObject[2])
+  })
+
+  it('can search for negative integer values', () => {
+    const searchable = new Searchable(DefaultObject, 'LOTR books')
+    const field = searchable.GetField('pages')
+    const records = searchable.SearchForValue(field, '-1')
+    expect(records).toHaveLength(1)
+    expect(records[0]).toStrictEqual(DefaultObject[3])
   })
 })
