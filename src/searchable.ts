@@ -10,7 +10,7 @@ export type Field = { fieldName: string; type: DataType }
 export type Entry = Record<string, any>
 
 export class Searchable {
-  private name: string
+  public readonly name: string
   private records: Entry[] = []
   private fields: Record<string, DataType> = {}
   private data: Record<string, DataMap> = {}

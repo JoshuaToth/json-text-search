@@ -42,9 +42,9 @@ describe('Loading Performance', () => {
   })
 })
 
-describe.only('Search Performance', () => {
+describe('Search Performance', () => {
   it('should have similar search times between 10 and 50000 records for scalar values', () => {
-    const smallRecords = GenerateRecords(10000)
+    const smallRecords = GenerateRecords(10)
     const smallSearchable = new Searchable(smallRecords, 'LOTR books')
     const smallField = smallSearchable.GetField('name')
 
@@ -81,7 +81,7 @@ describe.only('Search Performance', () => {
   })
 
   it('should have similar search times between 10 and 50000 records for array values', () => {
-    const smallRecords = GenerateRecords(10000)
+    const smallRecords = GenerateRecords(10)
     const smallSearchable = new Searchable(smallRecords, 'LOTR books')
     const smallField = smallSearchable.GetField('tags')
 
