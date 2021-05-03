@@ -11,8 +11,9 @@ import {
 } from './utils/consts'
 import { Print } from './utils/printer'
 import ReadLine from 'readline'
+import { ExitIfQuit } from './utils/exit'
 
-export class FileSearcher {
+export default class FileSearcher {
   private searchables: Searchable[] = []
 
   constructor(files: { fileName: string; name: string }[]) {
@@ -44,7 +45,7 @@ export class FileSearcher {
 
     if (!this.searchables.length) {
       Print(NO_FILES_LOADED)
-      process.exit(0)
+      ExitIfQuit('quit')
     }
     Print(`Search files loaded`)
   }
@@ -73,6 +74,7 @@ export class FileSearcher {
           `${this.GetSearchableFilesMessage()}
 `,
           (answer) => {
+            ExitIfQuit(answer, rl)
             const option = parseInt(answer) - 1
             if (Number.isNaN(option) || option >= this.searchables.length) {
               Print(INVALID_OPTION)
@@ -101,6 +103,7 @@ export class FileSearcher {
           `Enter search term
 `,
           (answer) => {
+            ExitIfQuit(answer, rl)
             res(file.GetField(answer))
           }
         )
@@ -127,6 +130,7 @@ export class FileSearcher {
         `Enter search value
 `,
         (answer) => {
+          ExitIfQuit(answer, rl)
           res(file.SearchForValue(field, answer))
           rl.close()
         }

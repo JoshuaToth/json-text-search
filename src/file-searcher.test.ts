@@ -7,7 +7,7 @@ import {
   NOT_ARRAY_RECORDS,
 } from './utils/consts'
 
-import { FileSearcher } from './file-searcher'
+import FileSearcher from './file-searcher'
 import {
   MockFileLocations,
   MockLotRBooks,
