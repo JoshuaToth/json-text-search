@@ -59,5 +59,6 @@ describe('Runner', () => {
     expect(FileQuestion).toHaveBeenCalledTimes(1)
     expect(FieldQuestion).toHaveBeenCalledTimes(1)
     expect(SearchQuestion).toHaveBeenCalledTimes(1)
+    expect(global.process.exit).toHaveBeenCalledTimes(1)
   })
 })
