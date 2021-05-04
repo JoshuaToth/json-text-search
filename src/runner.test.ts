@@ -12,7 +12,7 @@ const GetSearchableFilesMessage = jest.fn()
 const PrintSearchableFields = jest.fn()
 const FileQuestion = jest.fn()
 const FieldQuestion = jest.fn()
-const SearchQuestion = jest.fn()
+const SearchQuestion = jest.fn().mockReturnValue([{ hello: 'there' }])
 
 describe('Runner', () => {
   beforeEach(() => {
@@ -55,6 +55,7 @@ describe('Runner', () => {
         close: jest.fn(),
       })
     await Run()
+
     expect(PrintSearchableFields).toHaveBeenCalledTimes(1)
     expect(FileQuestion).toHaveBeenCalledTimes(1)
     expect(FieldQuestion).toHaveBeenCalledTimes(1)

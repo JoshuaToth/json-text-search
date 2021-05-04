@@ -73,5 +73,18 @@ const searchLoop = async (fileSearcher: FileSearcher) => {
   const field = await fileSearcher.FieldQuestion(searchable)
   const searchResults = await fileSearcher.SearchQuestion(searchable, field)
   Print(searchResults)
-  // TODO: human readable search results, if any
+
+  if (!searchResults.length) {
+    Print('No search results found')
+  } else {
+    searchResults.forEach((result) => {
+      Object.keys(result).forEach((key) =>
+        Print(
+          key,
+          key.length < 7 ? '\t\t\t' : key.length < 15 ? '\t\t' : '\t',
+          result[key]
+        )
+      )
+    })
+  }
 }
