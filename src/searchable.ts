@@ -16,7 +16,6 @@ export class Searchable {
   private fields: Record<string, DataType> = {}
   private data: Record<string, DataMap> = {}
 
-  // Possibly load record first?
   constructor(file: Record<string, any>[], name: string) {
     this.records = file
     this.name = name
@@ -62,7 +61,7 @@ export class Searchable {
       field.type === DataType.SCALAR
         ? value
         : CreateArrayValue(field.fieldName, value)
-    searchValueKey = replaceEmptyValue(searchValueKey)
+    searchValueKey = ReplaceEmptyValue(searchValueKey)
     const indexes = this.data[field.fieldName][searchValueKey] ?? []
     return indexes.map((index) => this.records[index])
   }
@@ -74,7 +73,7 @@ const AddValueIfMissing = (
   data: Record<string, DataMap>,
   value: string
 ) => {
-  const nonEmptyValue = replaceEmptyValue(value)
+  const nonEmptyValue = ReplaceEmptyValue(value)
   if (!data[key][nonEmptyValue]) {
     data[key][nonEmptyValue] = [index]
   } else {
@@ -83,4 +82,4 @@ const AddValueIfMissing = (
 }
 
 const CreateArrayValue = (key: string, value: any) => `${key}-${value}`
-const replaceEmptyValue = (value: any) => (value === '' ? EMPTY_STRING : value)
+const ReplaceEmptyValue = (value: any) => (value === '' ? EMPTY_STRING : value)

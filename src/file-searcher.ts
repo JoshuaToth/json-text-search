@@ -10,7 +10,7 @@ import {
   NO_FILES_LOADED,
 } from './utils/consts'
 import { Print } from './utils/printer'
-import ReadLine from 'readline'
+import * as ReadLine from 'readline'
 import { ExitIfQuit } from './utils/exit'
 
 export default class FileSearcher {

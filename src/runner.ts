@@ -1,6 +1,6 @@
 import FileSearcher from './file-searcher'
 import { Print } from './utils/printer'
-import ReadLine from 'readline'
+import * as ReadLine from 'readline'
 import { INVALID_OPTION } from './utils/consts'
 import { ExitIfQuit } from './utils/exit'
 
@@ -20,7 +20,7 @@ Type 'quit' to exit at any time, enter your choice and press 'Enter' to continue
     Print('\n\n')
 
     if (option === 1) {
-      await searchLoop(fileSearcher)
+      await SearchLoop(fileSearcher)
     } else if (option === 2) {
       fileSearcher.PrintSearchableFields()
     } else {
@@ -68,7 +68,7 @@ const ActionQuestion = async (): Promise<number> => {
   return selectedOption
 }
 
-const searchLoop = async (fileSearcher: FileSearcher) => {
+const SearchLoop = async (fileSearcher: FileSearcher) => {
   const searchable = await fileSearcher.FileQuestion()
   const field = await fileSearcher.FieldQuestion(searchable)
   const searchResults = await fileSearcher.SearchQuestion(searchable, field)

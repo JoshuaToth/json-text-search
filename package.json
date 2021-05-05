@@ -4,11 +4,12 @@
   "description": "Using the provided data (tickets.json and users.json and organization.json) write a simple command line application to search the data and return the results in a human readable format.",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && tsc src/index.ts --outdir dist && cp ./package.json dist",
-    "test": "jest src/ --coverage",
-    "test-watch": "yarn test --watchAll",
+    "build": "rm -rf dist && mkdir dist && tsc src/index.ts --outdir dist/src && cp ./package.json dist && cp -r ./content dist",
     "performance": "jest performance/",
-    "start": "ts-node src/index.ts"
+    "start-production": "node dist/src/index.js",
+    "start": "ts-node src/index.ts",
+    "test-watch": "yarn test --watchAll",
+    "test": "jest src/ --coverage"
   },
   "repository": {
     "type": "git",
